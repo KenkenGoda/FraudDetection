@@ -5,9 +5,6 @@ from .param_space import IntParamSpace, UniformParamSpace, LogUniformParamSpace
 
 class Config:
     def __init__(self, nrows=None):
-        # set the number of rows for reading files
-        self.nrows = nrows
-
         # raw data path
         self.data_dir = "../data"
         self.train_identity_path = os.path.join(self.data_dir, "train_identity.csv")
@@ -35,6 +32,18 @@ class Config:
 
         # target name
         self.target_name = "isFrand"
+
+        # whether execute parameter tuning
+        self.tuning = False
+
+        # number of trials
+        self.n_trials = 1
+
+        # number of splits
+        self.n_splits = 2
+
+        # whether save predicted data
+        self.save = False
 
         # study name and storage path of parameters for the best model
         self.study_name = f"lgb_{self.target_name}"

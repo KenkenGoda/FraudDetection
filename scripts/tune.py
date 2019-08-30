@@ -9,19 +9,21 @@ from .model import LGBMRegressor
 
 class ParameterTuning:
     def __init__(self, config):
-        self.target_name = config.target_name
         self.study_name = config.study_name
         self.storage_path = config.storage_path
+        self.n_trials = config.n_trials
+        self.n_splits = config.n_splits
+        self.seed = config.seed
         self.fixed_params = config.fixed_params
         self.param_space = config.param_space
-        self.seed = config.seed
+        self.target_name = config.target_name
 
-    def run(self, X, y, n_trials=1, n_splits=2):
+    def run(self, X, y):
         def objective(trial):
             params = {key: space(trial) for key, space in self.param_space.items()}
             params.update(self.fixed_params)
             model = LGBMRegressor(**params)
-            kf = KFold(n_splits=n_splits, shuffle=True, random_state=self.seed)
+            kf = KFold(n_splits=self.n_splits, shuffle=True, random_state=self.seed)
             score = []
             for train_idx, valid_idx in kf.split(X):
                 X_train_ = X.iloc[train_idx]
@@ -47,7 +49,7 @@ class ParameterTuning:
         )
 
         # search the best parameters with optuna
-        study.optimize(objective, n_trials=n_trials, n_jobs=-1)
+        study.optimize(objective, n_trials=self.n_trials, n_jobs=-1)
 
         # get the best parameters
         best_params = study.best_params

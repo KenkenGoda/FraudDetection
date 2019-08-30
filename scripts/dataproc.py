@@ -14,19 +14,14 @@ class DataProcessor:
         self.target_name = config.target_name
 
     def run(self, dataset):
-        # X
         X_train = self._make_X(dataset.train, "train")
         X_test = self._make_X(dataset.test, "test")
-
-        # y
         y_train = dataset.train[self.target_name]
-
         return X_train, y_train, X_test
 
     def _make_X(self, df, kind):
         ff = FeatureFactory()
         features = [ff(name) for name in self.feature_names]
-
         X = pd.DataFrame(index=df.index)
         for feature in tqdm(features):
             name = feature.__class__.__name__

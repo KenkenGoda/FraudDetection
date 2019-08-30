@@ -32,8 +32,8 @@ class Feature:
         for key, val in kwargs.items():
             setattr(self, key, val)
 
-    def run(self, df, dataset):
-        values = self.extract(df, dataset)
+    def run(self, df):
+        values = self.extract(df)
         values = values.fillna(0)
         return values
 
@@ -58,6 +58,3 @@ class BasicFeature(Feature):
         if values.dtype == "O":
             values = pd.get_dummies(values, prefix=self.prefix)
         return values
-
-
-
