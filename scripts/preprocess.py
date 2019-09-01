@@ -2,11 +2,12 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 
-from utils import reduce_mem_usage
+from .utils import reduce_mem_usage
 
 
 class Preprocessor:
     def run(self, train, test):
+        print("Start preprocessing")
         test["isFraud"] = 0
 
         train = reduce_mem_usage(train)
@@ -25,6 +26,7 @@ class Preprocessor:
         train = reduce_mem_usage(train)
         test = reduce_mem_usage(test)
 
+        print("Finish preprocessing")
         return train, test
 
     @staticmethod

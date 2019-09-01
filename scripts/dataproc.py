@@ -8,7 +8,6 @@ from .feature import FeatureFactory
 
 class DataProcessor:
     def __init__(self, config):
-        self.config = config
         self.pickled_feature_dir = config.pickled_feature_dir
         self.feature_names = config.feature_names
         self.target_name = config.target_name
