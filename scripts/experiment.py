@@ -16,7 +16,7 @@ class Experiment:
         print("Target:", config.target_name)
 
         if self.dataset_ is None:
-            creator = DatasetCreator()
+            creator = DatasetCreator(config)
             self.dataset_ = creator.run()
 
         if self.X_train_ is None:

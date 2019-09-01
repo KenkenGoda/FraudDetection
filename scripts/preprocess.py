@@ -6,17 +6,60 @@ from .utils import reduce_mem_usage
 
 
 class Preprocessor:
-    def run(self, train, test):
-        print("Start preprocessing")
-        test["isFraud"] = 0
+    def __init__(self, config):
+        self.target_name = config.target_name
+
+    def run(self, train_t, test_t, train_i, test_i):
+        print("Started preprocessing")
+        test_t[self.target_name] = 0
+
+        train_t, test_t = self.preprocess_transaction(train_t, test_t)
+        train_i, test_i = self.preprocess_identity(train_i, test_i)
+
+        train = train_t.join(train_i)
+        test = test_t.join(test_i)
+
+        print("Finished preprocessing")
+        return train, test
+
+    def preprocess_transaction(self, train, test):
+        train = reduce_mem_usage(train)
+        test = reduce_mem_usage(test)
+
+        train = self._rename_emaildomain(train)
+        test = self._rename_emaildomain(test)
+
+        cols = ["card4", "card6", "ProductCD", "M4", "P_emaildomain", "R_emaildomain"]
+        train, test = self._convert_string_to_count(train, test, cols)
+
+        cols = ["M1", "M2", "M3", "M5", "M6", "M7", "M8", "M9"]
+        train = self._convert_bool_to_int(train, cols)
+        test = self._convert_bool_to_int(test, cols)
 
         train = reduce_mem_usage(train)
         test = reduce_mem_usage(test)
 
-        train, test = self._convert_string_to_count(train, test)
+        train = train.set_index("TransactionID")
+        test = test.set_index("TransactionID")
 
-        train = self._convert_bool_to_int(train)
-        test = self._convert_bool_to_int(test)
+        return train, test
+
+    def preprocess_identity(self, train, test):
+        train = reduce_mem_usage(train)
+        test = reduce_mem_usage(test)
+
+        train = self._rename_OS(train)
+        test = self._rename_OS(test)
+
+        train = self._rename_browser(train)
+        test = self._rename_browser(test)
+
+        cols = ["id_30", "id_31", "DeviceInfo"]
+        train, test = self._convert_string_to_count(train, test, cols)
+
+        cols = ["id_35", "id_36", "id_37", "id_38"]
+        train = self._convert_bool_to_int(train, cols)
+        test = self._convert_bool_to_int(test, cols)
 
         train = self._convert_string_to_int(train)
         test = self._convert_string_to_int(test)
@@ -26,12 +69,60 @@ class Preprocessor:
         train = reduce_mem_usage(train)
         test = reduce_mem_usage(test)
 
-        print("Finish preprocessing")
+        train = train.set_index("TransactionID")
+        test = test.set_index("TransactionID")
+
         return train, test
 
     @staticmethod
-    def _convert_string_to_count(train, test):
-        cols = ["card4", "card6", "ProductCD", "M4"]
+    def _rename_emaildomain(df):
+        cols = ["P_emaildomain", "R_emaildomain"]
+        for col in cols:
+            df[col] = df[col].fillna("null")
+            df[col] = df[col].map(lambda x: x.split(".")[0])
+            df[col] = df[col].replace("null", np.nan)
+        return df
+
+    @staticmethod
+    def _rename_OS(df):
+        def rename(x):
+            for name in OS_names:
+                if name in str(x):
+                    x = name
+            return x
+
+        OS_names = ["android", "ios", "mac", "windows", "linux", "func"]
+        df["id_30"] = df["id_30"].fillna("null").map(lambda x: x.lower()).map(rename)
+        df["id_30"] = df["id_30"].replace("null", np.nan)
+        return df
+
+    @staticmethod
+    def _rename_browser(df):
+        def rename(x):
+            for name in browser_names:
+                if name in str(x):
+                    x = name
+            return x
+
+        browser_names = [
+            "samsung",
+            "safari",
+            "chrome",
+            "edge",
+            "firefox",
+            "ie",
+            "webview",
+            "generic",
+            "opera",
+            "android",
+            "google",
+        ]
+        df["id_31"] = df["id_31"].fillna("null").map(lambda x: x.lower()).map(rename)
+        df["id_31"] = df["id_31"].replace("null", np.nan)
+        return df
+
+    @staticmethod
+    def _convert_string_to_count(train, test, cols):
         for col in cols:
             _df = pd.concat([train[[col]], test[[col]]])
             count_dict = _df[col].value_counts().to_dict()
@@ -40,21 +131,7 @@ class Preprocessor:
         return train, test
 
     @staticmethod
-    def _convert_bool_to_int(df):
-        cols = [
-            "M1",
-            "M2",
-            "M3",
-            "M5",
-            "M6",
-            "M7",
-            "M8",
-            "M9",
-            "id_35",
-            "id_36",
-            "id_37",
-            "id_38",
-        ]
+    def _convert_bool_to_int(df, cols):
         for col in cols:
             df[col] = df[col].map({"T": 1, "F": 0})
         return df
@@ -82,7 +159,7 @@ class Preprocessor:
         df["id_33_0"] = df["id_33"].apply(lambda x: x.split("x")[0]).astype(int)
         df["id_33_1"] = df["id_33"].apply(lambda x: x.split("x")[1]).astype(int)
         df["id_33"] = np.where(df["id_33"] == "0x0", np.nan, df["id_33"])
-        df["DeviceType"].map({"desktop": 1, "mobile": 0})
+        df["DeviceType"] = df["DeviceType"].map({"desktop": 1, "mobile": 0})
         return df
 
     @staticmethod

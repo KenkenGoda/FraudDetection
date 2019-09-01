@@ -7,12 +7,10 @@ class Config:
     def __init__(self, nrows=None):
         # raw data path
         self.data_dir = "../data"
-        self.train_identity_path = os.path.join(self.data_dir, "train_identity.csv")
-        self.train_transaction_path = os.path.join(
-            self.data_dir, "train_transaction.csv"
-        )
-        self.test_identity_path = os.path.join(self.data_dir, "test_identity.csv")
-        self.test_transaction_path = os.path.join(self.data_dir, "test_transaction.csv")
+        self.train_t_path = os.path.join(self.data_dir, "train_transaction.csv")
+        self.test_t_path = os.path.join(self.data_dir, "test_transaction.csv")
+        self.train_i_path = os.path.join(self.data_dir, "train_identity.csv")
+        self.test_i_path = os.path.join(self.data_dir, "test_identity.csv")
         self.sample_submission_path = os.path.join(
             self.data_dir, "sample_submission.csv"
         )
@@ -31,7 +29,7 @@ class Config:
         self.feature_names = []
 
         # target name
-        self.target_name = "isFrand"
+        self.target_name = "isFraud"
 
         # whether execute parameter tuning
         self.tuning = False
