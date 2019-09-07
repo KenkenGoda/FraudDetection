@@ -14,8 +14,11 @@ class DataProcessor:
 
     def run(self, dataset):
         X_train = self._make_X(dataset.train, "train")
+        print("Succeeded in making X_train")
         X_test = self._make_X(dataset.test, "test")
+        print("Succeeded in making X_test")
         y_train = dataset.train[self.target_name]
+        print("Succeeded in making y_train")
         return X_train, y_train, X_test
 
     def _make_X(self, df, kind):

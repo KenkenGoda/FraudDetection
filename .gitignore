@@ -110,6 +110,5 @@ data/
 pickle/
 notebooks/*
 !notebooks/*.ipynb
-results/
 scripts/*
 !scripts/*.py

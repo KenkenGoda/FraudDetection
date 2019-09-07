@@ -2,9 +2,9 @@ import os
 
 import numpy as np
 import optuna
-from sklearn.model_selection import KFold
+from sklearn.model_selection import StratifiedKFold
 
-from .model import LGBMRegressor
+from .model import LGBMClassifier
 
 
 class ParameterTuning:
@@ -22,24 +22,28 @@ class ParameterTuning:
         def objective(trial):
             params = {key: space(trial) for key, space in self.param_space.items()}
             params.update(self.fixed_params)
-            model = LGBMRegressor(**params)
-            kf = KFold(n_splits=self.n_splits, shuffle=True, random_state=self.seed)
-            score = []
-            for train_idx, valid_idx in kf.split(X):
+            model = LGBMClassifier(**params)
+            folds = StratifiedKFold(
+                n_splits=self.n_splits, shuffle=True, random_state=self.seed
+            )
+            score = np.zeros(self.n_splits)
+            for i, (train_idx, valid_idx) in enumerate(folds.split(X, y)):
+                print(f"Fold {i+1}/{self.n_splits} on tuning")
                 X_train_ = X.iloc[train_idx]
-                y_train_ = y.iloc[train_idx][self.target_name]
+                y_train_ = y.iloc[train_idx]
                 X_valid_ = X.iloc[valid_idx]
                 y_valid_ = y.iloc[valid_idx]
                 model.fit(
                     X_train_,
                     y_train_,
-                    eval_set=(X_valid_, y_valid_[self.target_name]),
+                    eval_set=(X_valid_, y_valid_),
                     early_stopping_rounds=3,
-                    verbose=False,
+                    verbose=500,
                 )
                 y_pred_ = model.predict(X_valid_)
-                score.append(model.calculate_score(y_valid_, y_pred_))
-            score = np.mean(score)
+                score[i] = model.calculate_score(y_valid_, y_pred_)
+                del X_train_, y_train_, X_valid_, y_valid_, y_pred_
+            score = score.mean()
             return score
 
         study = optuna.create_study(

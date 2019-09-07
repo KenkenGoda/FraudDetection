@@ -38,6 +38,7 @@ class DatasetCreator:
             # save preprocessed dataframe to pickle
             train.to_pickle(self.config.pickled_train_path)
             test.to_pickle(self.config.pickled_test_path)
+            print("Succeeded in saving preprocessed dataframe to pickle")
 
         # create dataset
         Dataset = namedtuple("Dataset", ["train", "test"])

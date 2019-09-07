@@ -2,7 +2,7 @@ import lightgbm
 from sklearn.metrics import roc_auc_score
 
 
-class LGBMRegressor(lightgbm.LGBMRegressor):
+class LGBMClassifier(lightgbm.LGBMClassifier):
     def __init__(
         self,
         boosting_type="gbdt",
@@ -100,7 +100,7 @@ class LGBMRegressor(lightgbm.LGBMRegressor):
             "pred_leaf": pred_leaf,
             "pred_contrib": pred_contrib,
         }
-        return super().predict(X, **params, **kwargs)
+        return super().predict_proba(X, **params, **kwargs)[:, 1]
 
     def calculate_score(self, y_valid, y_pred):
         return roc_auc_score(y_valid, y_pred)

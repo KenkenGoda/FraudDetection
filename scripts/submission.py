@@ -13,3 +13,4 @@ class Submission:
         print("Succeeded in loading sample_submission.csv")
         submission[self.target_name] = prediction
         submission.to_csv(self.save_path, index=False)
+        print("Succeeded in saving results for submission")

@@ -7,6 +7,7 @@ class Config:
     def __init__(self, nrows=None):
         # raw data path
         self.data_dir = "../data"
+        os.makedirs(self.data_dir, exist_ok=True)
         self.train_t_path = os.path.join(self.data_dir, "train_transaction.csv")
         self.test_t_path = os.path.join(self.data_dir, "test_transaction.csv")
         self.train_i_path = os.path.join(self.data_dir, "train_identity.csv")
@@ -19,39 +20,61 @@ class Config:
         self.pickle_dir = "../pickle"
         self.pickled_data_dir = os.path.join(self.pickle_dir, "data")
         self.pickled_feature_dir = os.path.join(self.pickle_dir, "feature")
+        os.makedirs(self.pickle_dir, exist_ok=True)
+        os.makedirs(self.pickled_data_dir, exist_ok=True)
+        os.makedirs(self.pickled_feature_dir, exist_ok=True)
         self.pickled_train_path = os.path.join(self.pickled_data_dir, "train.pkl")
         self.pickled_test_path = os.path.join(self.pickled_data_dir, "test.pkl")
 
         # submission file path
-        self.submission_path = "../results/submission.csv"
+        results_dir = "../results"
+        os.makedirs(results_dir, exist_ok=True)
+        self.submission_path = os.path.join(results_dir, "submission.csv")
 
         # used feature names
-        self.feature_names = []
+        self.feature_names = [
+            "TransactionDT",
+            "TransactionAmt",
+            "ProductCD",
+            "CardInfo",
+            "Address",
+            "Distance",
+            "Emaildomain",
+            "Counting",
+            "Timedelta",
+            "Match",
+            "Vesta",
+            "Identity",
+            "DeviceType",
+            "DeviceInfo",
+        ]
 
         # target name
         self.target_name = "isFraud"
 
         # whether execute parameter tuning
-        self.tuning = False
+        self.tuning = True
 
         # number of trials
-        self.n_trials = 1
+        self.n_trials = 2
 
         # number of splits
-        self.n_splits = 2
+        self.n_splits = 5
 
         # whether save predicted data
         self.save = False
 
         # study name and storage path of parameters for the best model
-        self.study_name = f"lgb_{self.target_name}"
-        self.storage_path = f"../database/{self.study_name}.db"
+        database_dir = "../database"
+        os.makedirs(database_dir, exist_ok=True)
+        self.study_name = "lgb_0"
+        self.storage_path = os.path.join(database_dir, f"{self.study_name}.db")
 
         # static parameters for model
         self.fixed_params = {
             "boosting_type": "gbdt",
             "max_depth": 20,
-            "learning_rate": 1e-2,
+            "learning_rate": 1e-1,
             "n_estimators": 100000,
             "reg_alpha": 0.0,
             # "metric": "binary",
