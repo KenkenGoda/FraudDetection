@@ -19,6 +19,7 @@ class FeatureFactory:
                 FeatureFactory,
                 Feature,
                 BasicFeature,
+                NullFeature,
             ]:
                 lst.append(obj.__name__)
         return lst
@@ -56,6 +57,17 @@ class BasicFeature(Feature):
 
     def extract(self, df):
         values = df[self.columns]
+        return values
+
+
+class NullFeature(Feature):
+
+    columns = None
+
+    def extract(self, df):
+        cols = [col + "_null" for col in self.columns]
+        values = df[self.columns].isnull() * 1
+        values.columns = cols
         return values
 
 
@@ -116,8 +128,7 @@ class Vesta(BasicFeature):
 
 class Identity(BasicFeature):
 
-    columns = ["id_" + f"{n}".zfill(2) for n in range(1, 39)]
-    columns += ["id_33_0", "id_33_1"]
+    columns = ["id_" + f"{n}".zfill(2) for n in range(1, 39)] + ["id_33_0", "id_33_1"]
 
 
 class DeviceType(BasicFeature):
@@ -128,3 +139,53 @@ class DeviceType(BasicFeature):
 class DeviceInfo(BasicFeature):
 
     columns = "DeviceInfo"
+
+
+class CardInfoNull(NullFeature):
+
+    columns = [f"card{n}" for n in range(2, 7)]
+
+
+class AddressNull(NullFeature):
+
+    columns = ["addr1", "addr2"]
+
+
+class DistanceNull(NullFeature):
+
+    columns = ["dist1", "dist2"]
+
+
+class EmaildomainNull(NullFeature):
+
+    columns = ["P_emaildomain", "R_emaildomain"]
+
+
+class TimedeltaNull(NullFeature):
+
+    columns = [f"D{n}" for n in range(1, 16)]
+
+
+class MatchNull(NullFeature):
+
+    columns = [f"M{n}" for n in range(1, 10)]
+
+
+class VestaNull(NullFeature):
+
+    columns = [f"V{n}" for n in range(1, 95)] + [f"V{n}" for n in range(138, 340)]
+
+
+class IdentityNull(NullFeature):
+
+    columns = ["id_" + f"{n}".zfill(2) for n in range(1, 39)] + ["id_33_0", "id_33_1"]
+
+
+class DeviceTypeNull(NullFeature):
+
+    columns = ["DeviceType"]
+
+
+class DeviceInfoNull(NullFeature):
+
+    columns = ["DeviceInfo"]

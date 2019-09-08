@@ -20,9 +20,11 @@ class Config:
         self.pickle_dir = "../pickle"
         self.pickled_data_dir = os.path.join(self.pickle_dir, "data")
         self.pickled_feature_dir = os.path.join(self.pickle_dir, "feature")
+        self.pickled_model_dir = os.path.join(self.pickle_dir, "model")
         os.makedirs(self.pickle_dir, exist_ok=True)
         os.makedirs(self.pickled_data_dir, exist_ok=True)
         os.makedirs(self.pickled_feature_dir, exist_ok=True)
+        os.makedirs(self.pickled_model_dir, exist_ok=True)
         self.pickled_train_path = os.path.join(self.pickled_data_dir, "train.pkl")
         self.pickled_test_path = os.path.join(self.pickled_data_dir, "test.pkl")
 
@@ -47,6 +49,16 @@ class Config:
             "Identity",
             "DeviceType",
             "DeviceInfo",
+            "CardInfoNull",
+            "AddressNull",
+            "DistanceNull",
+            "EmaildomainNull",
+            "TimedeltaNull",
+            "MatchNull",
+            "VestaNull",
+            "IdentityNull",
+            "DeviceTypeNull",
+            "DeviceInfoNull",
         ]
 
         # target name
@@ -56,7 +68,7 @@ class Config:
         self.tuning = True
 
         # number of trials
-        self.n_trials = 2
+        self.n_trials = 1
 
         # number of splits
         self.n_splits = 5
@@ -67,7 +79,7 @@ class Config:
         # study name and storage path of parameters for the best model
         database_dir = "../database"
         os.makedirs(database_dir, exist_ok=True)
-        self.study_name = "lgb_0"
+        self.study_name = "lgb_1"
         self.storage_path = os.path.join(database_dir, f"{self.study_name}.db")
 
         # static parameters for model

@@ -2,6 +2,7 @@ import os
 
 import numpy as np
 import pandas as pd
+import pickle
 from sklearn.model_selection import StratifiedKFold
 
 from .model import LGBMClassifier
@@ -16,6 +17,7 @@ class Prediction:
         self.seed = config.seed
         self.save = config.save
         self.target_name = config.target_name
+        self.pickled_model_dir = config.pickled_model_dir
         self.pickled_feature_dir = config.pickled_feature_dir
 
     def run(self, X_train, y_train, X_test):
@@ -34,8 +36,8 @@ class Prediction:
         )
         score = np.zeros(self.n_splits)
         y_pred = np.zeros((self.n_splits, X_test.shape[0]))
-        for i, (train_idx, valid_idx) in enumerate(folds.split(X_train, y_train)):
-            print(f"Fold {i+1}/{self.n_splits}")
+        for n, (train_idx, valid_idx) in enumerate(folds.split(X_train, y_train)):
+            print(f"Fold {n+1}/{self.n_splits}")
             X_train_ = X_train.iloc[train_idx]
             y_train_ = y_train.iloc[train_idx]
             X_valid_ = X_train.iloc[valid_idx]
@@ -47,9 +49,10 @@ class Prediction:
                 early_stopping_rounds=3,
                 verbose=500,
             )
+            self._save_trained_model(model, n + 1)
             y_pred_ = model.predict(X_valid_)
-            score[i] = model.calculate_score(y_valid_, y_pred_)
-            y_pred[i] = model.predict(X_test)
+            score[n] = model.calculate_score(y_valid_, y_pred_)
+            y_pred[n] = model.predict(X_test)
             del X_train_, y_train_, X_valid_, y_valid_, y_pred_
         print(f"Score: {score.mean()}")
         y_pred = y_pred.mean(axis=0)
@@ -58,6 +61,11 @@ class Prediction:
             self._save_predicted_feature(y_pred, X_test.index)
 
         return y_pred
+
+    def _save_trained_model(self, model, n):
+        with open(os.path.join(self.pickled_model_dir, f"model_{n}.pkl"), "wb") as f:
+            pickle.dump(model, f)
+            print(f"save model_{n} to pickle")
 
     def _save_predicted_feature(self, y_pred, index):
         predicted_feature = pd.DataFrame(y_pred, index=index, columns=self.target_name)
