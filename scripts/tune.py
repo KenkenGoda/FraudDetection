@@ -44,7 +44,7 @@ class ParameterTuning:
                 score[i] = model.calculate_score(y_valid_, y_pred_)
                 del X_train_, y_train_, X_valid_, y_valid_, y_pred_
             score = score.mean()
-            return score
+            return 1.0 - score
 
         study = optuna.create_study(
             study_name=self.study_name,
