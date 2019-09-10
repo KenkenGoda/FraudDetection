@@ -26,6 +26,12 @@ class Preprocessor:
         train = reduce_mem_usage(train)
         test = reduce_mem_usage(test)
 
+        train = self._to_month(train)
+        test = self._to_month(test)
+
+        train = self._logarithmization(train)
+        test = self._logarithmization(test)
+
         train = self._rename_emaildomain(train)
         test = self._rename_emaildomain(test)
 
@@ -73,6 +79,34 @@ class Preprocessor:
         test = test.set_index("TransactionID")
 
         return train, test
+
+    @staticmethod
+    def _to_month(df):
+        sec2day = 60 * 60 * 24
+        year2day = 365.25
+        day2month = year2day / 12
+
+        def map(x):
+            x /= sec2day
+            if x > year2day:
+                x -= year2day
+            month = 1
+            while month < 13:
+                if (month - 1) * day2month <= x < month * day2month:
+                    x = month
+                    break
+                month += 1
+            if x > 12:
+                x = 12
+            return x
+
+        df["TransactionDT"] = df["TransactionDT"].map(map)
+        return df
+
+    @staticmethod
+    def _logarithmization(df):
+        df["TransactionAmt"] = np.log10(df["TransactionAmt"])
+        return df
 
     @staticmethod
     def _rename_emaildomain(df):
