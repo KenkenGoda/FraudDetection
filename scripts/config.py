@@ -83,7 +83,7 @@ class Config:
         # study name and storage path of parameters for the best model
         database_dir = "../database"
         os.makedirs(database_dir, exist_ok=True)
-        self.study_name = "lgb_2"
+        self.study_name = "lgb_3"
         self.storage_path = os.path.join(database_dir, f"{self.study_name}.db")
 
         # static parameters for model

@@ -71,9 +71,10 @@ class NullFeature(Feature):
         return values
 
 
-class TransactionDT(BasicFeature):
-
-    columns = "TransactionDT"
+class TransactionDT(Feature):
+    def extract(self, df):
+        values = df["TransactionDT"].map(lambda x: 1 if x == 1 else 0)
+        return values
 
 
 class TransactionAmt(BasicFeature):
@@ -113,7 +114,13 @@ class Counting(BasicFeature):
 
 class Timedelta(BasicFeature):
 
-    columns = [f"D{n}" for n in range(1, 16)]
+    columns = [f"D{n}" for n in range(1, 15)]
+
+
+class D15(Feature):
+    def extract(self, df):
+        values = df["D15"].map(lambda x: 1 if x == 0 else 0)
+        return values
 
 
 class Match(BasicFeature):
