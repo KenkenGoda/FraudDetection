@@ -20,6 +20,7 @@ class FeatureFactory:
                 Feature,
                 BasicFeature,
                 NullFeature,
+                LabeledFeature,
             ]:
                 lst.append(obj.__name__)
         return lst
@@ -68,6 +69,25 @@ class NullFeature(Feature):
         cols = [col + "_null" for col in self.columns]
         values = df[self.columns].isnull() * 1
         values.columns = cols
+        return values
+
+
+class LabeledFeature(Feature):
+
+    columns = None
+    start = None
+    end = None
+    step = None
+
+    def extract(self, df):
+        def labeling(x):
+            from_value = self.start
+            while from_value < self.end:
+                if from_value <= x < from_value + self.step:
+                    return int(from_value / self.step)
+                from_value += self.step
+
+        values = df[self.columns].map(labeling)
         return values
 
 
@@ -148,51 +168,67 @@ class DeviceInfo(BasicFeature):
     columns = "DeviceInfo"
 
 
-class CardInfoNull(NullFeature):
+class NullCardInfo(NullFeature):
 
     columns = [f"card{n}" for n in range(2, 7)]
 
 
-class AddressNull(NullFeature):
+class NullAddress(NullFeature):
 
     columns = ["addr1", "addr2"]
 
 
-class DistanceNull(NullFeature):
+class NullDistance(NullFeature):
 
     columns = ["dist1", "dist2"]
 
 
-class EmaildomainNull(NullFeature):
+class NullEmaildomain(NullFeature):
 
     columns = ["P_emaildomain", "R_emaildomain"]
 
 
-class TimedeltaNull(NullFeature):
+class NullTimedelta(NullFeature):
 
     columns = [f"D{n}" for n in range(1, 16)]
 
 
-class MatchNull(NullFeature):
+class NullMatch(NullFeature):
 
     columns = [f"M{n}" for n in range(1, 10)]
 
 
-class VestaNull(NullFeature):
+class NullVesta(NullFeature):
 
     columns = [f"V{n}" for n in range(1, 95)] + [f"V{n}" for n in range(138, 340)]
 
 
-class IdentityNull(NullFeature):
+class NullIdentity(NullFeature):
 
     columns = ["id_" + f"{n}".zfill(2) for n in range(1, 39)] + ["id_33_0", "id_33_1"]
 
 
-class DeviceTypeNull(NullFeature):
+class NullDeviceType(NullFeature):
 
     columns = ["DeviceType"]
 
 
-class DeviceInfoNull(NullFeature):
+class NullDeviceInfo(NullFeature):
 
     columns = ["DeviceInfo"]
+
+
+class LabeledCard1(LabeledFeature):
+
+    columns = "card1"
+    start = 1000
+    end = 19000
+    step = 1500
+
+
+class LabeledCard2(LabeledFeature):
+
+    columns = "card2"
+    start = 100
+    end = 600
+    step = 50
