@@ -88,6 +88,7 @@ class LabeledFeature(Feature):
                 from_value += self.step
 
         values = df[self.columns].map(func)
+        values.name = self.columns + "_labeled"
         return values
 
 
@@ -220,7 +221,7 @@ class NullDeviceInfo(NullFeature):
 
 class LabeledCard1(LabeledFeature):
 
-    columns = ["card1"]
+    columns = "card1"
     start = 1000
     end = 19000
     step = 1500
@@ -228,7 +229,7 @@ class LabeledCard1(LabeledFeature):
 
 class LabeledCard2(LabeledFeature):
 
-    columns = ["card2"]
+    columns = "card2"
     start = 100
     end = 600
     step = 50
