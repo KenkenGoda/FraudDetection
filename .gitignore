@@ -109,7 +109,7 @@ venv.bak/
 data/
 pickle/*
 !pickle/model/
-notebooks/*
-!notebooks/*.ipynb
+notebooks/
+#!notebooks/*.ipynb
 scripts/*
 !scripts/*.py
