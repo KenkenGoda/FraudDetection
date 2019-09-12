@@ -35,6 +35,16 @@ class Preprocessor:
         train = self._rename_emaildomain(train)
         test = self._rename_emaildomain(test)
 
+        train["card1"] = train["card1"].map(
+            lambda x: self._labeling(x, 1000, 19000, 1500)
+        )
+        test["card1"] = test["card1"].map(
+            lambda x: self._labeling(x, 1000, 19000, 1500)
+        )
+
+        train["card2"] = train["card2"].map(lambda x: self._labeling(x, 100, 600, 50))
+        test["card2"] = test["card2"].map(lambda x: self._labeling(x, 100, 600, 50))
+
         cols = ["card4", "card6", "ProductCD", "M4", "P_emaildomain", "R_emaildomain"]
         train, test = self._convert_string_to_count(train, test, cols)
 
@@ -116,6 +126,14 @@ class Preprocessor:
             df[col] = df[col].map(lambda x: x.split(".")[0])
             df[col] = df[col].replace("null", np.nan)
         return df
+
+    @staticmethod
+    def _labeling(x, start, end, step):
+        from_value = start
+        while from_value < end:
+            if from_value <= x < from_value + step:
+                return int(from_value / step)
+            from_value += step
 
     @staticmethod
     def _rename_OS(df):
