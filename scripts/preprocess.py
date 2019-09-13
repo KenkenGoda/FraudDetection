@@ -114,6 +114,17 @@ class Preprocessor:
         return df
 
     @staticmethod
+    def _fill_distance(train, test, col):
+        _df = pd.concat([train[["addr1", col]], test[["addr1", col]]]).dropna()
+        _df = _df.drop_duplicates("addr1").drop_duplicates(col)
+        addr2dist = {addr: dist for addr, dist in zip(_df["addr1"], _df[col])}
+        train_idx = train[col].isnull()
+        test_idx = test[col].isnull()
+        train.loc[train_idx, col] = train.loc[train_idx, "addr1"].map(addr2dist)
+        test.loc[test_idx, col] = test.loc[test_idx, "addr1"].map(addr2dist)
+        return train, test
+
+    @staticmethod
     def _rename_emaildomain(df):
         cols = ["P_emaildomain", "R_emaildomain"]
         for col in cols:
