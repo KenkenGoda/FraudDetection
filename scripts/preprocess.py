@@ -35,7 +35,12 @@ class Preprocessor:
         train = self._rename_emaildomain(train)
         test = self._rename_emaildomain(test)
 
-        cols = ["card4", "card6", "ProductCD", "M4", "P_emaildomain", "R_emaildomain"]
+        cols = ["card4", "card6"]
+        cols += ["ProductCD"]
+        cols += ["M4"]
+        cols += ["P_emaildomain", "R_emaildomain"]
+        cols += ["addr1", "addr2"]
+        cols += [f"C{n}" for n in range(1, 15)]
         train, test = self._convert_string_to_count(train, test, cols)
 
         cols = ["M1", "M2", "M3", "M5", "M6", "M7", "M8", "M9"]

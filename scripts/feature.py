@@ -82,10 +82,12 @@ class LabeledFeature(Feature):
     def extract(self, df):
         def func(x):
             from_value = self.start
+            label = 0
             while from_value < self.end:
                 if from_value <= x < from_value + self.step:
-                    return int(from_value / self.step)
+                    return label
                 from_value += self.step
+                label += 1
 
         values = df[self.columns].map(func)
         values.name = self.columns + "_labeled"
@@ -233,3 +235,19 @@ class LabeledCard2(LabeledFeature):
     start = 100
     end = 600
     step = 50
+
+
+class LabeledCard3(LabeledFeature):
+
+    columns = "card3"
+    start = 100
+    end = 250
+    step = 30
+
+
+class LabeledCard5(LabeledFeature):
+
+    columns = "card5"
+    start = 100
+    end = 250
+    step = 30

@@ -67,10 +67,10 @@ class ParameterTuning:
                 storage=f"sqlite:///{self.storage_path}",
                 load_if_exists=True,
             )
-            print("load the best parameters")
             params = study.best_params
             params.update(self.fixed_params)
             print(params)
+            print("Succeeded in loading the best parameters")
             return params
         else:
             print("Not found the best parameters")

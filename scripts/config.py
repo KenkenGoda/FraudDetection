@@ -66,6 +66,8 @@ class Config:
             "NullDeviceInfo",
             "LabeledCard1",
             "LabeledCard2",
+            "LabeledCard3",
+            "LabeledCard5",
         ]
 
         # target name
@@ -86,7 +88,7 @@ class Config:
         # study name and storage path of parameters for the best model
         database_dir = "../database"
         os.makedirs(database_dir, exist_ok=True)
-        self.study_name = "lgb_4"
+        self.study_name = "lgb_5"
         self.storage_path = os.path.join(database_dir, f"{self.study_name}.db")
 
         # static parameters for model
