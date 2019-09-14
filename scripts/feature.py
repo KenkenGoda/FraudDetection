@@ -204,7 +204,7 @@ class NullCardInfo(NullFeature):
 
 class NullAddress(NullFeature):
 
-    columns = ["addr1", "addr2"]
+    columns = ["addr1"]
 
 
 class NullDistance(NullFeature):
@@ -245,12 +245,6 @@ class NullDeviceType(NullFeature):
 class NullDeviceInfo(NullFeature):
 
     columns = ["DeviceInfo"]
-
-
-class NullPairAddress(NullPairFeature):
-
-    columns = ["addr1", "addr2"]
-    name = "addr_pair"
 
 
 class NullPairDistance(NullPairFeature):

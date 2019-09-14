@@ -64,7 +64,6 @@ class Config:
             "NullIdentity",
             "NullDeviceType",
             "NullDeviceInfo",
-            "NullPairAddress",
             "NullPairDistance",
             "NullPairEmaildomain",
             "LabeledCard1",
