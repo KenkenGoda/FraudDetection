@@ -1,5 +1,7 @@
 import inspect
 
+import numpy as np
+
 from .config import Config
 
 
@@ -20,6 +22,7 @@ class FeatureFactory:
                 Feature,
                 BasicFeature,
                 NullFeature,
+                NullPairFeature,
                 LabeledFeature,
             ]:
                 lst.append(obj.__name__)
@@ -69,6 +72,29 @@ class NullFeature(Feature):
         cols = [col + "_null" for col in self.columns]
         values = df[self.columns].isnull() * 1
         values.columns = cols
+        return values
+
+
+class NullPairFeature(Feature):
+
+    columns = None
+    name = None
+
+    def extract(self, df):
+        def func(x):
+            if np.isnan(x[0]):
+                if np.isnan(x[1]):
+                    return 0
+                else:
+                    return 1
+            else:
+                if np.isnan(x[1]):
+                    return 2
+                else:
+                    return 3
+
+        values = df[self.columns].apply(func, axis=1)
+        values.name = self.name
         return values
 
 
@@ -219,6 +245,24 @@ class NullDeviceType(NullFeature):
 class NullDeviceInfo(NullFeature):
 
     columns = ["DeviceInfo"]
+
+
+class NullPairAddress(NullPairFeature):
+
+    columns = ["addr1", "addr2"]
+    name = "addr_pair"
+
+
+class NullPairDistance(NullPairFeature):
+
+    columns = ["dist1", "dist2"]
+    name = "dist_pair"
+
+
+class NullPairEmaildomain(NullPairFeature):
+
+    columns = ["P_emaildomain", "R_emaildomain"]
+    name = "emaildomain_pair"
 
 
 class LabeledCard1(LabeledFeature):

@@ -32,6 +32,9 @@ class Preprocessor:
         train = self._logarithmization(train)
         test = self._logarithmization(test)
 
+        train, test = self._fill_distance(train, test, "dist1")
+        train, test = self._fill_distance(train, test, "dist2")
+
         train = self._rename_emaildomain(train)
         test = self._rename_emaildomain(test)
 
