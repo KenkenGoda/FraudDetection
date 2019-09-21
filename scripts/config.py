@@ -39,21 +39,26 @@ class Config:
 
         # used feature names
         self.feature_names = [
-            "TransactionDT",
+            "TransactionMonth",
+            "TransactionHour",
             "TransactionAmt",
             "ProductCD",
             "CardInfo",
-            "Address",
+            "CardType",
+            # "Address",
             "Distance",
-            "Emaildomain",
+            "P_Emaildomain",
+            "R_Emaildomain",
             "Counting",
             "Timedelta",
             "D15",
             "Match",
+            "M4",
             "Vesta",
             "Identity",
+            "OSType",
             "DeviceType",
-            "DeviceInfo",
+            # "DeviceInfo",
             "NullCardInfo",
             "NullAddress",
             "NullDistance",
@@ -79,10 +84,10 @@ class Config:
         self.tuning = True
 
         # number of trials
-        self.n_trials = 1
+        self.n_trials = 10
 
         # number of splits
-        self.n_splits = 5
+        self.n_splits = 4
 
         # whether save predicted data
         self.save = False
@@ -90,7 +95,7 @@ class Config:
         # study name and storage path of parameters for the best model
         database_dir = "../database"
         os.makedirs(database_dir, exist_ok=True)
-        self.study_name = "lgb_6"
+        self.study_name = "lgb_7"
         self.storage_path = os.path.join(database_dir, f"{self.study_name}.db")
 
         # static parameters for model
@@ -98,20 +103,20 @@ class Config:
             "boosting_type": "gbdt",
             "max_depth": 20,
             "learning_rate": 1e-1,
-            "n_estimators": 100000,
+            "n_estimators": 3000,
             "reg_alpha": 0.0,
-            # "metric": "binary",
+            "metric": "binary",
         }
 
         # parameter space for searching with optuna
         self.param_space = {
-            "num_leaves": IntParamSpace("num_leaves", 2, 100),
-            "subsample": UniformParamSpace("subsample", 0.5, 1.0),
+            "num_leaves": IntParamSpace("num_leaves", 64, 128),
+            "subsample": UniformParamSpace("subsample", 0.5, 0.8),
             "subsample_freq": IntParamSpace("subsample_freq", 1, 20),
             "colsample_bytree": LogUniformParamSpace("colsample_bytree", 1e-2, 1e-1),
-            # "min_child_weight": LogUniformParamSpace("min_child_weight", 1e-3, 1e1),
-            # "min_child_samples": IntParamSpace("min_child_samples", 1, 50),
-            # "reg_lambda": LogUniformParamSpace("reg_lambda", 1e-1, 1e4),
+            "min_child_weight": LogUniformParamSpace("min_child_weight", 1e-3, 1e1),
+            "min_child_samples": IntParamSpace("min_child_samples", 1, 50),
+            "reg_lambda": LogUniformParamSpace("reg_lambda", 1e-1, 1e4),
         }
 
         # random seed

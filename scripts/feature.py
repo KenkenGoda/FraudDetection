@@ -1,6 +1,7 @@
 import inspect
 
 import numpy as np
+import pandas as pd
 
 from .config import Config
 
@@ -57,10 +58,16 @@ class Feature:
 class BasicFeature(Feature):
 
     columns = None
+    dummy = False
     prefix = None
+    prefix_sep = None
 
     def extract(self, df):
         values = df[self.columns]
+        if self.dummy:
+            values = pd.get_dummies(
+                values, prefix=self.prefix, prefix_sep=self.prefix_sep
+            )
         return values
 
 
@@ -120,10 +127,18 @@ class LabeledFeature(Feature):
         return values
 
 
-class TransactionDT(Feature):
+class TransactionMonth(Feature):
     def extract(self, df):
-        values = df["TransactionDT"].map(lambda x: 1 if x == 1 else 0)
+        values = df["TransactionMonth"].map(lambda x: 1 if x == 1 else 0)
         return values
+
+
+class TransactionHour(BasicFeature):
+
+    columns = "TransactionHour"
+    dummy = True
+    prefix = "hour"
+    prefix_sep = ""
 
 
 class TransactionAmt(BasicFeature):
@@ -134,11 +149,20 @@ class TransactionAmt(BasicFeature):
 class ProductCD(BasicFeature):
 
     columns = "ProductCD"
+    dummy = True
+    prefix = "Product"
+    prefix_sep = ""
 
 
 class CardInfo(BasicFeature):
 
-    columns = [f"card{n}" for n in range(1, 7)]
+    columns = [f"card{n}" for n in range(1, 7) if n != 4]
+
+
+class CardType(BasicFeature):
+
+    columns = "card4"
+    dummy = True
 
 
 class Address(BasicFeature):
@@ -151,9 +175,20 @@ class Distance(BasicFeature):
     columns = ["dist1", "dist2"]
 
 
-class Emaildomain(BasicFeature):
+class P_Emaildomain(BasicFeature):
 
-    columns = ["P_emaildomain", "R_emaildomain"]
+    columns = "P_emaildomain"
+    dummy = True
+    prefix = "P"
+    prefix_sep = "_"
+
+
+class R_emaildomain(BasicFeature):
+
+    columns = "R_emaildomain"
+    dummy = True
+    prefix = "R"
+    prefix_sep = "_"
 
 
 class Counting(BasicFeature):
@@ -174,7 +209,15 @@ class D15(Feature):
 
 class Match(BasicFeature):
 
-    columns = [f"M{n}" for n in range(1, 10)]
+    columns = [f"M{n}" for n in range(1, 10) if n != 4]
+
+
+class M4(BasicFeature):
+
+    columns = "M4"
+    dummy = True
+    prefix = "M4"
+    prefix_sep = "_"
 
 
 class Vesta(BasicFeature):
@@ -184,7 +227,14 @@ class Vesta(BasicFeature):
 
 class Identity(BasicFeature):
 
-    columns = ["id_" + f"{n}".zfill(2) for n in range(1, 39)] + ["id_33_0", "id_33_1"]
+    columns = ["id_" + f"{n}".zfill(2) for n in range(1, 39) if n != 30]
+    columns += ["id_33_0", "id_33_1"]
+
+
+class OSType(BasicFeature):
+
+    columns = "id_30"
+    dummy = True
 
 
 class DeviceType(BasicFeature):

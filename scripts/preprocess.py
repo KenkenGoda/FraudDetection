@@ -29,6 +29,9 @@ class Preprocessor:
         train = self._to_month(train)
         test = self._to_month(test)
 
+        train = self._to_hour(train)
+        test = self._to_hour(test)
+
         train = self._logarithmization(train)
         test = self._logarithmization(test)
 
@@ -38,10 +41,7 @@ class Preprocessor:
         train = self._rename_emaildomain(train)
         test = self._rename_emaildomain(test)
 
-        cols = ["card4", "card6"]
-        cols += ["ProductCD"]
-        cols += ["M4"]
-        cols += ["P_emaildomain", "R_emaildomain"]
+        cols = ["card6"]
         cols += ["addr1", "addr2"]
         cols += [f"C{n}" for n in range(1, 15)]
         train, test = self._convert_string_to_count(train, test, cols)
@@ -68,7 +68,7 @@ class Preprocessor:
         train = self._rename_browser(train)
         test = self._rename_browser(test)
 
-        cols = ["id_30", "id_31", "DeviceInfo"]
+        cols = ["id_31", "DeviceInfo"]
         train, test = self._convert_string_to_count(train, test, cols)
 
         cols = ["id_35", "id_36", "id_37", "id_38"]
@@ -90,25 +90,30 @@ class Preprocessor:
 
     @staticmethod
     def _to_month(df):
-        sec2day = 60 * 60 * 24
-        year2day = 365.25
-        day2month = year2day / 12
+        year2month = 12
+        sec2month = 60 * 60 * 24 * (365.25 / year2month)
 
-        def map(x):
-            x /= sec2day
-            if x > year2day:
-                x -= year2day
-            month = 1
-            while month < 13:
-                if (month - 1) * day2month <= x < month * day2month:
-                    x = month
-                    break
-                month += 1
-            if x > 12:
-                x = 12
+        def func(x):
+            x = int(x / sec2month)
+            while x > year2month:
+                x -= year2month
             return x
 
-        df["TransactionDT"] = df["TransactionDT"].map(map)
+        df["TransactionMonth"] = df["TransactionDT"].map(func)
+        return df
+
+    @staticmethod
+    def _to_hour(df):
+        sec2hour = 60 * 60
+        day2hour = 24
+
+        def func(x):
+            x = int(x / sec2hour)
+            while x > day2hour:
+                x -= day2hour
+            return x
+
+        df["TransactionHour"] = df["TransactionDT"].map(func)
         return df
 
     @staticmethod
@@ -133,6 +138,7 @@ class Preprocessor:
         for col in cols:
             df[col] = df[col].fillna("null")
             df[col] = df[col].map(lambda x: x.split(".")[0])
+            df[col] = df[col].replace("scranton", np.nan)
             df[col] = df[col].replace("null", np.nan)
         return df
 

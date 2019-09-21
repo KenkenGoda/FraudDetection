@@ -37,7 +37,7 @@ class ParameterTuning:
                     X_train_,
                     y_train_,
                     eval_set=(X_valid_, y_valid_),
-                    early_stopping_rounds=3,
+                    early_stopping_rounds=100,
                     verbose=500,
                 )
                 y_pred_ = model.predict(X_valid_)
@@ -53,7 +53,7 @@ class ParameterTuning:
         )
 
         # search the best parameters with optuna
-        study.optimize(objective, n_trials=self.n_trials, n_jobs=-1)
+        study.optimize(objective, n_trials=self.n_trials, n_jobs=1)
 
         # get the best parameters
         best_params = study.best_params
