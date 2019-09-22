@@ -88,14 +88,14 @@ class NullPairFeature(Feature):
     name = None
 
     def extract(self, df):
-        def func(x):
-            if np.isnan(x[0]):
-                if np.isnan(x[1]):
+        def func(row):
+            if type(row[0]) == float and np.isnan(row[0]):
+                if type(row[1]) == float and np.isnan(row[1]):
                     return 0
                 else:
                     return 1
             else:
-                if np.isnan(x[1]):
+                if type(row[1]) == float and np.isnan(row[1]):
                     return 2
                 else:
                     return 3
@@ -127,10 +127,23 @@ class LabeledFeature(Feature):
         return values
 
 
+class NullCount(Feature):
+    def extract(self, df):
+        values = df.isna().sum(axis=1)
+        values.name = "nullCount"
+        return values
+
+
 class TransactionMonth(Feature):
     def extract(self, df):
         values = df["TransactionMonth"].map(lambda x: 1 if x == 1 else 0)
         return values
+
+
+class TransactionDayOfWeek(BasicFeature):
+
+    columns = "TransactionDayOfWeek"
+    dummy = True
 
 
 class TransactionHour(BasicFeature):
@@ -144,6 +157,11 @@ class TransactionHour(BasicFeature):
 class TransactionAmt(BasicFeature):
 
     columns = "TransactionAmt"
+
+
+class TransactionAmtCheck(BasicFeature):
+
+    columns = "TransactionAmtCheck"
 
 
 class ProductCD(BasicFeature):
@@ -183,7 +201,7 @@ class P_Emaildomain(BasicFeature):
     prefix_sep = "_"
 
 
-class R_emaildomain(BasicFeature):
+class R_Emaildomain(BasicFeature):
 
     columns = "R_emaildomain"
     dummy = True
@@ -228,7 +246,7 @@ class Vesta(BasicFeature):
 class Identity(BasicFeature):
 
     columns = ["id_" + f"{n}".zfill(2) for n in range(1, 39) if n != 30]
-    columns += ["id_33_0", "id_33_1"]
+    columns += ["id_33_0", "id_33_1", "id_33_2"]
 
 
 class OSType(BasicFeature):
@@ -284,7 +302,7 @@ class NullVesta(NullFeature):
 
 class NullIdentity(NullFeature):
 
-    columns = ["id_" + f"{n}".zfill(2) for n in range(1, 39)] + ["id_33_0", "id_33_1"]
+    columns = ["id_" + f"{n}".zfill(2) for n in range(1, 39)]
 
 
 class NullDeviceType(NullFeature):
@@ -339,3 +357,28 @@ class LabeledCard5(LabeledFeature):
     start = 100
     end = 250
     step = 30
+
+
+class LabeledResolusionRow(LabeledFeature):
+
+    columns = "id_33_0"
+    start = 0
+    end = 9000
+    step = 1000
+
+
+class LabeledResolusionColumn(LabeledFeature):
+
+    columns = "id_33_1"
+    start = 0
+    end = 6000
+    step = 1000
+
+
+class LabeledResolusion(LabeledFeature):
+
+    columns = "id_33_2"
+    start = 0
+    end = 46000000
+    step = 1000000
+

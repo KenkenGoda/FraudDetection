@@ -39,13 +39,16 @@ class Config:
 
         # used feature names
         self.feature_names = [
+            # "NullCount",
             "TransactionMonth",
+            # "TransactionDayOfWeek",
             "TransactionHour",
             "TransactionAmt",
+            # "TransactionAmtCheck",
             "ProductCD",
             "CardInfo",
             "CardType",
-            # "Address",
+            "Address",
             "Distance",
             "P_Emaildomain",
             "R_Emaildomain",
@@ -58,7 +61,7 @@ class Config:
             "Identity",
             "OSType",
             "DeviceType",
-            # "DeviceInfo",
+            "DeviceInfo",
             "NullCardInfo",
             "NullAddress",
             "NullDistance",
@@ -75,6 +78,9 @@ class Config:
             "LabeledCard2",
             "LabeledCard3",
             "LabeledCard5",
+            # "LabeledResolusionRow",
+            # "LabeledResolusionColumn",
+            # "LabeledResolusion",
         ]
 
         # target name
@@ -84,7 +90,7 @@ class Config:
         self.tuning = True
 
         # number of trials
-        self.n_trials = 10
+        self.n_trials = 2
 
         # number of splits
         self.n_splits = 4
@@ -95,7 +101,7 @@ class Config:
         # study name and storage path of parameters for the best model
         database_dir = "../database"
         os.makedirs(database_dir, exist_ok=True)
-        self.study_name = "lgb_7"
+        self.study_name = "lgb_8"
         self.storage_path = os.path.join(database_dir, f"{self.study_name}.db")
 
         # static parameters for model

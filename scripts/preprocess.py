@@ -26,20 +26,19 @@ class Preprocessor:
         train = reduce_mem_usage(train)
         test = reduce_mem_usage(test)
 
-        train = self._to_month(train)
-        test = self._to_month(test)
+        train = self._preprocess_TransactionDT(train)
+        test = self._preprocess_TransactionDT(test)
 
-        train = self._to_hour(train)
-        test = self._to_hour(test)
-
-        train = self._logarithmization(train)
-        test = self._logarithmization(test)
+        train, test = self._preprocess_TransactionAmt(train, test)
 
         train, test = self._fill_distance(train, test, "dist1")
         train, test = self._fill_distance(train, test, "dist2")
 
         train = self._rename_emaildomain(train)
         test = self._rename_emaildomain(test)
+
+        train = self._make_uid(train)
+        test = self._make_uid(test)
 
         cols = ["card6"]
         cols += ["addr1", "addr2"]
@@ -68,6 +67,9 @@ class Preprocessor:
         train = self._rename_browser(train)
         test = self._rename_browser(test)
 
+        train = self._make_id(train)
+        test = self._make_id(test)
+
         cols = ["id_31", "DeviceInfo"]
         train, test = self._convert_string_to_count(train, test, cols)
 
@@ -89,37 +91,24 @@ class Preprocessor:
         return train, test
 
     @staticmethod
-    def _to_month(df):
-        year2month = 12
-        sec2month = 60 * 60 * 24 * (365.25 / year2month)
-
-        def func(x):
-            x = int(x / sec2month)
-            while x > year2month:
-                x -= year2month
-            return x
-
-        df["TransactionMonth"] = df["TransactionDT"].map(func)
+    def _preprocess_TransactionDT(df):
+        df["TransactionDT"] = pd.to_datetime(df["TransactionDT"], unit="s")
+        df["TransactionMonth"] = df["TransactionDT"].dt.month
+        df["TransactionDayOfWeek"] = df["TransactionDT"].dt.day_name()
+        df["TransactionHour"] = df["TransactionDT"].dt.hour
         return df
 
     @staticmethod
-    def _to_hour(df):
-        sec2hour = 60 * 60
-        day2hour = 24
-
-        def func(x):
-            x = int(x / sec2hour)
-            while x > day2hour:
-                x -= day2hour
-            return x
-
-        df["TransactionHour"] = df["TransactionDT"].map(func)
-        return df
-
-    @staticmethod
-    def _logarithmization(df):
-        df["TransactionAmt"] = np.log10(df["TransactionAmt"])
-        return df
+    def _preprocess_TransactionAmt(train, test):
+        train["TransactionAmtCheck"] = np.where(
+            train["TransactionAmt"].isin(test["TransactionAmt"]), 1, 0
+        )
+        test["TransactionAmtCheck"] = np.where(
+            test["TransactionAmt"].isin(train["TransactionAmt"]), 1, 0
+        )
+        train["TransactionAmt"] = np.log10(train["TransactionAmt"])
+        test["TransactionAmt"] = np.log10(test["TransactionAmt"])
+        return train, test
 
     @staticmethod
     def _fill_distance(train, test, col):
@@ -181,6 +170,24 @@ class Preprocessor:
         return df
 
     @staticmethod
+    def _make_uid(df):
+        df["uid"] = df["card1"].astype(str) + "_" + df["card2"].astype(str)
+        df["uid1"] = df["uid"] + "_" + df["card3"].astype(str)
+        df["uid2"] = df["uid1"] + "_" + df["card5"].astype(str)
+        df["uid3"] = (
+            df["uid2"] + "_" + df["addr1"].astype(str) + "_" + df["addr2"].astype(str)
+        )
+        df["uid4"] = df["card4"].astype(str) + "_" + df["card6"].astype(str)
+        return df
+
+    @staticmethod
+    def _make_id(df):
+        df["id"] = df["id_35"].astype(str) + "_" + df["id_36"].astype(str)
+        df["id1"] = df["id"] + "_" + df["id_37"].astype(str)
+        df["id2"] = df["id1"] + "_" + df["id_38"].astype(str)
+        return df
+
+    @staticmethod
     def _convert_string_to_count(train, test, cols):
         for col in cols:
             _df = pd.concat([train[[col]], test[[col]]])
@@ -211,13 +218,18 @@ class Preprocessor:
         df["id_27"] = df["id_27"].map({"Found": 1, "NotFound": 0})
         df["id_28"] = df["id_28"].map({"New": 2, "Found": 1})
         df["id_29"] = df["id_29"].map({"Found": 1, "NotFound": 0})
-        df["id_34"] = df["id_34"].fillna(":0")
-        df["id_34"] = df["id_34"].apply(lambda x: x.split(":")[1]).astype(np.int8)
-        df["id_34"] = np.where(df["id_34"] == 0, np.nan, df["id_34"])
+
         df["id_33"] = df["id_33"].fillna("0x0")
         df["id_33_0"] = df["id_33"].apply(lambda x: x.split("x")[0]).astype(int)
         df["id_33_1"] = df["id_33"].apply(lambda x: x.split("x")[1]).astype(int)
+        df["id_33_2"] = df["id_33_0"] * df["id_33_1"]
         df["id_33"] = np.where(df["id_33"] == "0x0", np.nan, df["id_33"])
+
+        df["id_34"] = df["id_34"].fillna(":0")
+        df["id_34"] = df["id_34"].map(lambda x: x.split(":")[1]).astype(np.int8)
+        df["id_34"] = np.where(df["id_34"] == 0, np.nan, df["id_34"])
+        df["id_34"] = np.where(df["id_34"] == -1, np.nan, df["id_34"])
+
         df["DeviceType"] = df["DeviceType"].map({"desktop": 1, "mobile": 0})
         return df
 
