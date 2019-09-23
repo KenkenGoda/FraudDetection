@@ -43,6 +43,7 @@ class Preprocessor:
         cols = ["card6"]
         cols += ["addr1", "addr2"]
         cols += [f"C{n}" for n in range(1, 15)]
+        cols += ["uid", "uid1", "uid2", "uid3", "uid4"]
         train, test = self._convert_string_to_count(train, test, cols)
 
         cols = ["M1", "M2", "M3", "M5", "M6", "M7", "M8", "M9"]
@@ -71,6 +72,7 @@ class Preprocessor:
         test = self._make_id(test)
 
         cols = ["id_31", "DeviceInfo"]
+        cols = ["id", "id1", "id2"]
         train, test = self._convert_string_to_count(train, test, cols)
 
         cols = ["id_35", "id_36", "id_37", "id_38"]

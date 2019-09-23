@@ -39,12 +39,12 @@ class Config:
 
         # used feature names
         self.feature_names = [
-            # "NullCount",
+            "NullCount",
             "TransactionMonth",
-            # "TransactionDayOfWeek",
+            "TransactionDayOfWeek",
             "TransactionHour",
             "TransactionAmt",
-            # "TransactionAmtCheck",
+            "TransactionAmtCheck",
             "ProductCD",
             "CardInfo",
             "CardType",
@@ -78,9 +78,9 @@ class Config:
             "LabeledCard2",
             "LabeledCard3",
             "LabeledCard5",
-            # "LabeledResolusionRow",
-            # "LabeledResolusionColumn",
-            # "LabeledResolusion",
+            "LabeledResolusionRow",
+            "LabeledResolusionColumn",
+            "LabeledResolusion",
         ]
 
         # target name
@@ -90,8 +90,7 @@ class Config:
         self.tuning = True
 
         # number of trials
-        self.n_trials = 2
-
+        self.n_trials = 1
         # number of splits
         self.n_splits = 4
 
@@ -101,7 +100,7 @@ class Config:
         # study name and storage path of parameters for the best model
         database_dir = "../database"
         os.makedirs(database_dir, exist_ok=True)
-        self.study_name = "lgb_8"
+        self.study_name = "lgb_9"
         self.storage_path = os.path.join(database_dir, f"{self.study_name}.db")
 
         # static parameters for model
@@ -109,7 +108,7 @@ class Config:
             "boosting_type": "gbdt",
             "max_depth": 20,
             "learning_rate": 1e-1,
-            "n_estimators": 3000,
+            "n_estimators": 10000,
             "reg_alpha": 0.0,
             "metric": "binary",
         }
