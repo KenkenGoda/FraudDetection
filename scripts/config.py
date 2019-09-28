@@ -47,14 +47,11 @@ class Config:
             "TransactionAmtCheck",
             "ProductCD",
             "CardInfo",
-            "CardType",
             "Address",
             "Distance",
-            "P_Emaildomain",
-            "R_Emaildomain",
+            "Emaildomain",
             "Counting",
             "Timedelta",
-            "D15",
             "Match",
             "M4",
             "Vesta",
@@ -90,7 +87,7 @@ class Config:
         self.tuning = True
 
         # number of trials
-        self.n_trials = 1
+        self.n_trials = 10
         # number of splits
         self.n_splits = 4
 
@@ -100,7 +97,7 @@ class Config:
         # study name and storage path of parameters for the best model
         database_dir = "../database"
         os.makedirs(database_dir, exist_ok=True)
-        self.study_name = "lgb_9"
+        self.study_name = "lgb_10"
         self.storage_path = os.path.join(database_dir, f"{self.study_name}.db")
 
         # static parameters for model

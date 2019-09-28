@@ -134,24 +134,19 @@ class NullCount(Feature):
         return values
 
 
-class TransactionMonth(Feature):
-    def extract(self, df):
-        values = df["TransactionMonth"].map(lambda x: 1 if x == 1 else 0)
-        return values
+class TransactionMonth(BasicFeature):
+
+    columns = "TransactionMonth"
 
 
 class TransactionDayOfWeek(BasicFeature):
 
     columns = "TransactionDayOfWeek"
-    dummy = True
 
 
 class TransactionHour(BasicFeature):
 
     columns = "TransactionHour"
-    dummy = True
-    prefix = "hour"
-    prefix_sep = ""
 
 
 class TransactionAmt(BasicFeature):
@@ -167,20 +162,11 @@ class TransactionAmtCheck(BasicFeature):
 class ProductCD(BasicFeature):
 
     columns = "ProductCD"
-    dummy = True
-    prefix = "Product"
-    prefix_sep = ""
 
 
 class CardInfo(BasicFeature):
 
-    columns = [f"card{n}" for n in range(1, 7) if n != 4]
-
-
-class CardType(BasicFeature):
-
-    columns = "card4"
-    dummy = True
+    columns = [f"card{n}" for n in range(1, 7)]
 
 
 class Address(BasicFeature):
@@ -193,20 +179,9 @@ class Distance(BasicFeature):
     columns = ["dist1", "dist2"]
 
 
-class P_Emaildomain(BasicFeature):
+class Emaildomain(BasicFeature):
 
-    columns = "P_emaildomain"
-    dummy = True
-    prefix = "P"
-    prefix_sep = "_"
-
-
-class R_Emaildomain(BasicFeature):
-
-    columns = "R_emaildomain"
-    dummy = True
-    prefix = "R"
-    prefix_sep = "_"
+    columns = ["P_emaildomain", "R_emaildomain"]
 
 
 class Counting(BasicFeature):
@@ -216,13 +191,7 @@ class Counting(BasicFeature):
 
 class Timedelta(BasicFeature):
 
-    columns = [f"D{n}" for n in range(1, 15)]
-
-
-class D15(Feature):
-    def extract(self, df):
-        values = df["D15"].map(lambda x: 1 if x == 0 else 0)
-        return values
+    columns = [f"D{n}" for n in range(1, 16)]
 
 
 class Match(BasicFeature):
@@ -252,7 +221,6 @@ class Identity(BasicFeature):
 class OSType(BasicFeature):
 
     columns = "id_30"
-    dummy = True
 
 
 class DeviceType(BasicFeature):

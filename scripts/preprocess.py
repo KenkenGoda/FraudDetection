@@ -40,9 +40,15 @@ class Preprocessor:
         train = self._make_uid(train)
         test = self._make_uid(test)
 
-        cols = ["card6"]
+        cols = ["TransactionMonth", "TransactionDayOfWeek", "TransactionHour"]
+        cols += ["ProductCD"]
+        cols += [f"card{n}" for n in range(1, 7)]
         cols += ["addr1", "addr2"]
+        cols += ["dist1", "dist2"]
+        cols += ["P_emaildomain", "R_emaildomain"]
         cols += [f"C{n}" for n in range(1, 15)]
+        cols += [f"D{n}" for n in range(1, 16) if n != 9]
+        cols += [f"V{n}" for n in range(1, 340)]
         cols += ["uid", "uid1", "uid2", "uid3", "uid4"]
         train, test = self._convert_string_to_count(train, test, cols)
 
@@ -71,8 +77,8 @@ class Preprocessor:
         train = self._make_id(train)
         test = self._make_id(test)
 
-        cols = ["id_31", "DeviceInfo"]
-        cols = ["id", "id1", "id2"]
+        cols = ["id_30", "id_31", "DeviceInfo"]
+        cols += ["id", "id1", "id2"]
         train, test = self._convert_string_to_count(train, test, cols)
 
         cols = ["id_35", "id_36", "id_37", "id_38"]
