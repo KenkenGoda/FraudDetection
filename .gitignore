@@ -107,8 +107,7 @@ venv.bak/
 .DS_Store
 .vscode/
 data/
-pickle/*
-!pickle/model/
+pickle/
 notebooks/
 #!notebooks/*.ipynb
 scripts/*
