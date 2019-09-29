@@ -48,6 +48,7 @@ class Config:
             "ProductCD",
             "CardInfo",
             "Address",
+            "StackedCardInfo",
             "Distance",
             "Emaildomain",
             "Counting",
@@ -57,6 +58,7 @@ class Config:
             "Vesta",
             "Identity",
             "OSType",
+            "StackedIdentity",
             "DeviceType",
             "DeviceInfo",
             "NullCardInfo",
@@ -87,7 +89,7 @@ class Config:
         self.tuning = True
 
         # number of trials
-        self.n_trials = 10
+        self.n_trials = 100
         # number of splits
         self.n_splits = 4
 
@@ -97,15 +99,16 @@ class Config:
         # study name and storage path of parameters for the best model
         database_dir = "../database"
         os.makedirs(database_dir, exist_ok=True)
-        self.study_name = "lgb_10"
+        self.study_name = "lgb_11"
         self.storage_path = os.path.join(database_dir, f"{self.study_name}.db")
 
         # static parameters for model
         self.fixed_params = {
             "boosting_type": "gbdt",
-            "max_depth": 20,
-            "learning_rate": 1e-1,
-            "n_estimators": 10000,
+            "max_depth": 7,
+            "max_bin": 256,
+            "learning_rate": 1e-2,
+            "n_estimators": 100000,
             "reg_alpha": 0.0,
             "metric": "binary",
         }
@@ -117,7 +120,7 @@ class Config:
             "subsample_freq": IntParamSpace("subsample_freq", 1, 20),
             "colsample_bytree": LogUniformParamSpace("colsample_bytree", 1e-2, 1e-1),
             "min_child_weight": LogUniformParamSpace("min_child_weight", 1e-3, 1e1),
-            "min_child_samples": IntParamSpace("min_child_samples", 1, 50),
+            "min_child_samples": IntParamSpace("min_child_samples", 256, 1024),
             "reg_lambda": LogUniformParamSpace("reg_lambda", 1e-1, 1e4),
         }
 

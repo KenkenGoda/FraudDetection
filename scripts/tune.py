@@ -36,9 +36,10 @@ class ParameterTuning:
                 model.fit(
                     X_train_,
                     y_train_,
-                    eval_set=(X_valid_, y_valid_),
+                    eval_set=[(X_train_, y_train_), (X_valid_, y_valid_)],
+                    eval_names=["train", "valid"],
                     early_stopping_rounds=100,
-                    verbose=500,
+                    verbose=1000,
                 )
                 y_pred_ = model.predict(X_valid_)
                 score[i] = model.calculate_score(y_valid_, y_pred_)
@@ -62,11 +63,7 @@ class ParameterTuning:
 
     def get_best_params(self):
         if os.path.isfile(self.storage_path):
-            study = optuna.create_study(
-                study_name=self.study_name,
-                storage=f"sqlite:///{self.storage_path}",
-                load_if_exists=True,
-            )
+            study = optuna.load_study(self.study_name, f"sqlite:///{self.storage_path}")
             params = study.best_params
             params.update(self.fixed_params)
             print(params)

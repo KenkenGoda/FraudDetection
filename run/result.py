@@ -7,6 +7,7 @@ def main():
         study_name, f"sqlite:///../database/{study_name}.db"
     )
     df = study.trials_dataframe()[["params", "value"]].sort_values("value")
+    print(df.shape[0], "trials")
     print(df.head(10))
 
 

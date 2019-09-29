@@ -174,6 +174,11 @@ class Address(BasicFeature):
     columns = ["addr1", "addr2"]
 
 
+class StackedCardInfo(BasicFeature):
+
+    columns = ["uid", "uid1", "uid2", "uid3", "uid4"]
+
+
 class Distance(BasicFeature):
 
     columns = ["dist1", "dist2"]
@@ -221,6 +226,11 @@ class Identity(BasicFeature):
 class OSType(BasicFeature):
 
     columns = "id_30"
+
+
+class StackedIdentity(BasicFeature):
+
+    columns = ["id", "id1", "id2"]
 
 
 class DeviceType(BasicFeature):
