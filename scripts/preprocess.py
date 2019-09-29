@@ -77,7 +77,10 @@ class Preprocessor:
         train = self._make_id(train)
         test = self._make_id(test)
 
-        cols = ["id_30", "id_31", "DeviceInfo"]
+        train = self._preprocess_DeviceInfo(train)
+        test = self._preprocess_DeviceInfo(test)
+
+        cols = ["id_30", "id_31", "DeviceInfo", "DeviceInfo1", "DeviceInfo2"]
         cols += ["id", "id1", "id2"]
         train, test = self._convert_string_to_count(train, test, cols)
 
@@ -108,14 +111,18 @@ class Preprocessor:
 
     @staticmethod
     def _preprocess_TransactionAmt(train, test):
-        train["TransactionAmtCheck"] = np.where(
-            train["TransactionAmt"].isin(test["TransactionAmt"]), 1, 0
-        )
-        test["TransactionAmtCheck"] = np.where(
-            test["TransactionAmt"].isin(train["TransactionAmt"]), 1, 0
-        )
-        train["TransactionAmt"] = np.log10(train["TransactionAmt"])
-        test["TransactionAmt"] = np.log10(test["TransactionAmt"])
+        amt_train = train["TransactionAmt"]
+        amt_test = test["TransactionAmt"]
+        train["TransactionAmtCheck"] = np.where(amt_train.isin(amt_test), 1, 0)
+        test["TransactionAmtCheck"] = np.where(amt_test.isin(amt_train), 1, 0)
+        train["TransactionAmtDecimal"] = (
+            (amt_train - amt_train.astype(int)) * 1000
+        ).astype(int)
+        test["TransactionAmtDecimal"] = (
+            (amt_test - amt_test.astype(int)) * 1000
+        ).astype(int)
+        train["TransactionAmt"] = np.log10(amt_train)
+        test["TransactionAmt"] = np.log10(amt_test)
         return train, test
 
     @staticmethod
@@ -193,6 +200,12 @@ class Preprocessor:
         df["id"] = df["id_35"].astype(str) + "_" + df["id_36"].astype(str)
         df["id1"] = df["id"] + "_" + df["id_37"].astype(str)
         df["id2"] = df["id1"] + "_" + df["id_38"].astype(str)
+        return df
+
+    @staticmethod
+    def _preprocess_DeviceInfo(df):
+        cols = ["DeviceInfo1", "DeviceInfo2"]
+        df[cols] = df["DeviceInfo"].str.split("/", expand=True)[[0, 1]]
         return df
 
     @staticmethod

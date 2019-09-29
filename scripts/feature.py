@@ -154,6 +154,11 @@ class TransactionAmt(BasicFeature):
     columns = "TransactionAmt"
 
 
+class TransactionAmtDecimal(BasicFeature):
+
+    columns = "TransactionAmtDecimal"
+
+
 class TransactionAmtCheck(BasicFeature):
 
     columns = "TransactionAmtCheck"
@@ -243,6 +248,16 @@ class DeviceInfo(BasicFeature):
     columns = "DeviceInfo"
 
 
+class DeviceInfo1(BasicFeature):
+
+    columns = "DeviceInfo1"
+
+
+class DeviceInfo2(BasicFeature):
+
+    columns = "DeviceInfo2"
+
+
 class NullCardInfo(NullFeature):
 
     columns = [f"card{n}" for n in range(2, 7)]
@@ -291,6 +306,16 @@ class NullDeviceType(NullFeature):
 class NullDeviceInfo(NullFeature):
 
     columns = ["DeviceInfo"]
+
+
+class NullDeviceInfo1(NullFeature):
+
+    columns = ["DeviceInfo1"]
+
+
+class NullDeviceInfo2(NullFeature):
+
+    columns = ["DeviceInfo2"]
 
 
 class NullPairDistance(NullPairFeature):
