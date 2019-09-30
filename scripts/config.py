@@ -93,7 +93,7 @@ class Config:
         self.target_name = "isFraud"
 
         # whether execute parameter tuning
-        self.tuning = True
+        self.tuning = False
 
         # number of trials
         self.n_trials = 100
