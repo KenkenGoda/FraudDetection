@@ -174,6 +174,11 @@ class CardInfo(BasicFeature):
     columns = [f"card{n}" for n in range(1, 7)]
 
 
+class CardCount(BasicFeature):
+
+    columns = "cardCount"
+
+
 class Address(BasicFeature):
 
     columns = ["addr1", "addr2"]
@@ -261,6 +266,11 @@ class DeviceInfo2(BasicFeature):
 class NullCardInfo(NullFeature):
 
     columns = [f"card{n}" for n in range(2, 7)]
+
+
+class NullCardCount(NullFeature):
+
+    columns = ["cardCount"]
 
 
 class NullAddress(NullFeature):
@@ -384,4 +394,3 @@ class LabeledResolusion(LabeledFeature):
     start = 0
     end = 46000000
     step = 1000000
-

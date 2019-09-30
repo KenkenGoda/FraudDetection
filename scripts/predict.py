@@ -48,7 +48,7 @@ class Prediction:
                 eval_set=[(X_train_, y_train_), (X_valid_, y_valid_)],
                 eval_names=["train", "valid"],
                 early_stopping_rounds=100,
-                verbose=1000,
+                verbose=5000,
             )
             self._save_trained_model(model, n + 1)
             y_pred_ = model.predict(X_valid_)

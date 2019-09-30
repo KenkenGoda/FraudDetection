@@ -39,7 +39,7 @@ class ParameterTuning:
                     eval_set=[(X_train_, y_train_), (X_valid_, y_valid_)],
                     eval_names=["train", "valid"],
                     early_stopping_rounds=100,
-                    verbose=1000,
+                    verbose=5000,
                 )
                 y_pred_ = model.predict(X_valid_)
                 score[i] = model.calculate_score(y_valid_, y_pred_)

@@ -2,7 +2,7 @@ import optuna
 
 
 def main():
-    study_name = "lgb_10"
+    study_name = "lgb_12"
     study = optuna.study.load_study(
         study_name, f"sqlite:///../database/{study_name}.db"
     )

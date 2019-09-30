@@ -31,6 +31,9 @@ class Preprocessor:
 
         train, test = self._preprocess_TransactionAmt(train, test)
 
+        train = self._add_card_count(train)
+        test = self._add_card_count(test)
+
         train, test = self._fill_distance(train, test, "dist1")
         train, test = self._fill_distance(train, test, "dist2")
 
@@ -124,6 +127,16 @@ class Preprocessor:
         train["TransactionAmt"] = np.log10(amt_train)
         test["TransactionAmt"] = np.log10(amt_test)
         return train, test
+
+    @staticmethod
+    def _add_card_count(df):
+        cols = [f"card{n}" for n in range(1, 7)]
+        cols += ["addr1"]
+        cols += [f"C{n}" for n in range(1, 12)]
+        _df = df.groupby(cols, as_index=False)["TransactionID"].count()
+        _df = _df.rename(columns={"TransactionID": "cardCount"})
+        df = df.merge(_df, how="left", on=cols)
+        return df
 
     @staticmethod
     def _fill_distance(train, test, col):
