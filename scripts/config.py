@@ -48,7 +48,7 @@ class Config:
             "TransactionAmtCheck",
             "ProductCD",
             "CardInfo",
-            # "CardCount",
+            "CardCount",
             "Address",
             "StackedCardInfo",
             "Distance",
@@ -66,7 +66,7 @@ class Config:
             "DeviceInfo1",
             "DeviceInfo2",
             "NullCardInfo",
-            # "NullCardCount",
+            "NullCardCount",
             "NullAddress",
             "NullDistance",
             "NullEmaildomain",
@@ -98,7 +98,7 @@ class Config:
         # number of trials
         self.n_trials = 100
         # number of splits
-        self.n_splits = 4
+        self.n_splits = 5
 
         # whether save predicted data
         self.save = False
@@ -106,7 +106,7 @@ class Config:
         # study name and storage path of parameters for the best model
         database_dir = "../database"
         os.makedirs(database_dir, exist_ok=True)
-        self.study_name = "lgb_12"
+        self.study_name = "lgb_13"
         self.storage_path = os.path.join(database_dir, f"{self.study_name}.db")
 
         # static parameters for model
@@ -115,7 +115,7 @@ class Config:
             "max_depth": 7,
             "max_bin": 256,
             "learning_rate": 1e-2,
-            "n_estimators": 100000,
+            "n_estimators": 50000,
             "reg_alpha": 0.0,
             "metric": "binary",
         }
